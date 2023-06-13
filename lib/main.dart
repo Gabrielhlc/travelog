@@ -3,9 +3,11 @@ import 'package:earth_places/screens/place_form_screen.dart';
 import 'package:earth_places/screens/places_list_screen.dart';
 import 'package:earth_places/utils/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+Future main() async {
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
