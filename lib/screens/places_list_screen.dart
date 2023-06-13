@@ -1,7 +1,8 @@
-import 'package:earth_places/providers/earth_places.dart';
-import 'package:earth_places/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:earth_places/providers/earth_places.dart';
+import 'package:earth_places/utils/app_routes.dart';
 
 class PlacesListScreen extends StatelessWidget {
   const PlacesListScreen({super.key});
@@ -20,22 +21,30 @@ class PlacesListScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: Consumer<EarthPlaces>(
-          child: const Center(
-            child: Text('Nenhum local cadastrado!'),
-          ),
-          builder: (ctx, earthPlaces, child) => earthPlaces.itemsCount == 0
-              ? child!
-              : ListView.builder(
-                  itemCount: earthPlaces.itemsCount,
-                  itemBuilder: (ctx, i) => ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage:
-                          FileImage(earthPlaces.getItemByIndex(i).image),
-                    ),
-                    title: Text(earthPlaces.getItemByIndex(i).title),
-                    onTap: () {},
+        body: FutureBuilder(
+          future: Provider.of<EarthPlaces>(context, listen: false).loadPlaces(),
+          builder: (ctx, snapshot) => snapshot.connectionState ==
+                  ConnectionState.waiting
+              ? const Center(child: CircularProgressIndicator())
+              : Consumer<EarthPlaces>(
+                  child: const Center(
+                    child: Text('Nenhum local cadastrado!'),
                   ),
+                  builder: (ctx, earthPlaces, child) =>
+                      earthPlaces.itemsCount == 0
+                          ? child!
+                          : ListView.builder(
+                              itemCount: earthPlaces.itemsCount,
+                              itemBuilder: (ctx, i) => ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage: FileImage(
+                                      earthPlaces.getItemByIndex(i).image),
+                                ),
+                                title:
+                                    Text(earthPlaces.getItemByIndex(i).title),
+                                onTap: () {},
+                              ),
+                            ),
                 ),
         ));
   }
